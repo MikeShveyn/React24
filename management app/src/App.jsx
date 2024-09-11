@@ -7,12 +7,13 @@ import {useState} from 'react'
 function App() {
   const [projectsState, setProjectsState] = useState({
     selectedProject: "empty",
-    projects: []
+    projects: [],
+    tasks: []
   })
 
-  function handleDoneAddNewProject(prjectData) {
+  function handleDoneAddNewProject(projectData) {
     setProjectsState(prevState => {
-      const newProject = {...prjectData, id: Math.random()}
+      const newProject = {...projectData, id: Math.random()}
       return {
         ...prevState,
         selectedProject: 'empty',
@@ -48,14 +49,56 @@ function App() {
     })
   }
 
-  const selectedProject = projectsState.projects.find(p => p.id === selectedProject)
+  function handleDeleteProject() {
+    setProjectsState(prevState => {
+      return {
+        ...prevState,
+        selectedProject: "empty",
+        projects : prevState.projects.filter(pr => pr.id !== prevState.selectedProject)
+      }
+    })
+  }
+
+  function handleAddTask(text) {
+    setProjectsState(prevState => {
+      const newTask = {
+        text: text,
+        id: Math.random(),
+        projectId : prevState.selectedProject
+      }
+
+      return {
+        ...prevState,
+        tasks: [newTask, ...prevState.tasks]
+      }
+    })
+  }
+
+  function handleDeleteTask(id) {
+    setProjectsState(prevState => {
+      return {
+        ...prevState,
+        tasks : prevState.tasks.filter(ts => ts.id !== id)
+      }
+    })
+  }
+
+  const selectedProject = projectsState.projects.find(p => p.id === projectsState.selectedProject)
   
-  let content = <SelectedProject project={selectedProject}/>;
+  let content = <SelectedProject  
+  tasks={projectsState.tasks}
+  onAddTask={handleAddTask}
+  onRemoveTask={handleDeleteTask}
+  onDelete={handleDeleteProject} 
+  project={selectedProject}/>;
 
   if(projectsState.selectedProject == "new") {
-    content = <NewProject cancelProject={handleCancelAddProject} addProject={handleDoneAddNewProject}/>
+    content = <NewProject
+     cancelProject={handleCancelAddProject} 
+     addProject={handleDoneAddNewProject}/>
   }else if(projectsState.selectedProject == "empty") {
-    content = <NoProjectSelected onStartAddProject={handleStartAddProject}/>
+    content = <NoProjectSelected 
+    onStartAddProject={handleStartAddProject}/>
   }
 
   return (
