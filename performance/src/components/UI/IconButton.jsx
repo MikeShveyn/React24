@@ -1,6 +1,8 @@
 import { log } from '../../log.js';
-
-export default function IconButton({ children, icon, ...props }) {
+import { memo } from 'react';
+// ...props will rest event memo casue we redefine function we pass throw it 
+// so we also use useCallback to not recreate functions
+const IconButton = memo(function IconButton({ children, icon, ...props }) {
   log('<IconButton /> rendered', 2);
 
   const Icon = icon;
@@ -10,4 +12,6 @@ export default function IconButton({ children, icon, ...props }) {
       <span className="button-text">{children}</span>
     </button>
   );
-}
+})
+
+export default IconButton;
