@@ -26,7 +26,7 @@ function isPrime(number) {
 
   return true;
 }
-
+// could be removed memo cause not to mutch executions
 const Counter = memo(function Counter({ initialCount }) {
   log('<Counter /> rendered', 1);
   const initialCountIsPrime = isPrime(initialCount);
